@@ -1,51 +1,72 @@
-def ASSIGNMENT(new_list, i, old_list, j):
-    new_list[i] = old_list[j]
-
-
-def mergeSort(list_to_sort_by_merge):
-    if (
-        len(list_to_sort_by_merge) > 1
-        and not len(list_to_sort_by_merge) < 1
-        and len(list_to_sort_by_merge) != 0
-    ):
-        mid = len(list_to_sort_by_merge) // 2
-        left = list_to_sort_by_merge[:mid]
-        right = list_to_sort_by_merge[mid:]
-
-        mergeSort(left)
-        mergeSort(right)
-
-        l = 0
-        r = 0
-        i = 0
-
-        while l < len(left) and r < len(right):
-            if left[l] <= right[r]:
-                ASSIGNMENT(new_list=list_to_sort_by_merge, i=i, old_list=left, j=l)
-                l += 1
-            else:
-                ASSIGNMENT(new_list=list_to_sort_by_merge, i=i, old_list=right, j=r)
-                r += 1
-            i += 1
-
-        while l < len(left):
-            list_to_sort_by_merge[i] = left[l]
-            l += 1
-            i += 1
-
-        while r < len(right):
-            list_to_sort_by_merge[i] = right[r]
-            r += 1
-            i += 1
-
-
+import time
+import random
 import matplotlib.pyplot as plt
+from typing import List
 
-my_list = [54, 26, 93, 17, 77, 31, 44, 55, 20]
-x = range(len(my_list))
-plt.plot(x, my_list)
-plt.show()
-mergeSort(my_list)
-x = range(len(my_list))
-plt.plot(x, my_list)
-plt.show()
+
+def merge_sort(arr: List[int]) -> None:
+    """Sorts the array in-place using Merge Sort algorithm."""
+    if len(arr) <= 1:
+        return
+
+    mid = len(arr) // 2
+    left = arr[:mid]
+    right = arr[mid:]
+
+    merge_sort(left)
+    merge_sort(right)
+
+    merge(arr, left, right)
+
+
+def merge(arr: List[int], left: List[int], right: List[int]) -> None:
+    """Merges two sorted sublists into arr."""
+    i = j = k = 0
+
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            arr[k] = left[i]
+            i += 1
+        else:
+            arr[k] = right[j]
+            j += 1
+        k += 1
+
+    while i < len(left):
+        arr[k] = left[i]
+        i += 1
+        k += 1
+
+    while j < len(right):
+        arr[k] = right[j]
+        j += 1
+        k += 1
+
+
+def measure_execution_time(n: int) -> float:
+    """Returns execution time to sort a list of size n."""
+    test_list = [random.randint(0, 10000) for _ in range(n)]
+    start = time.time()
+    merge_sort(test_list)
+    end = time.time()
+    return end - start
+
+
+def plot_merge_sort_performance():
+    """Plots Merge Sort execution time vs input size."""
+    sizes = [100, 500, 1000, 2000, 4000, 8000, 16000]
+    times = [measure_execution_time(size) for size in sizes]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(sizes, times, marker='o', linestyle='-', color='blue')
+    plt.title("Merge Sort Performance")
+    plt.xlabel("Input Size (Number of Elements)")
+    plt.ylabel("Execution Time (Seconds)")
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+
+if __name__ == "__main__":
+    plot_merge_sort_performance()
+

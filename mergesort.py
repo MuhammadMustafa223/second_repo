@@ -1,51 +1,55 @@
-def ASSIGNMENT(new_list, i, old_list, j):
-    new_list[i] = old_list[j]
+from typing import List
 
+def merge_sort(arr: List[int]) -> List[int]:
+    """
+    Recursively sorts an array using the merge sort algorithm.
+    
+    Args:
+        arr: A list of integers to be sorted.
+    
+    Returns:
+        A new sorted list of integers.
+    """
+    if len(arr) <= 1:
+        return arr
 
-def mergeSort(list_to_sort_by_merge):
-    if (
-        len(list_to_sort_by_merge) > 1
-        and not len(list_to_sort_by_merge) < 1
-        and len(list_to_sort_by_merge) != 0
-    ):
-        mid = len(list_to_sort_by_merge) // 2
-        left = list_to_sort_by_merge[:mid]
-        right = list_to_sort_by_merge[mid:]
+    middle = len(arr) // 2
+    left_half = merge_sort(arr[:middle])
+    right_half = merge_sort(arr[middle:])
+    
+    return merge(left_half, right_half)
 
-        mergeSort(left)
-        mergeSort(right)
+def merge(left: List[int], right: List[int]) -> List[int]:
+    """
+    Merges two sorted lists into a single sorted list.
+    
+    Args:
+        left: Sorted left half.
+        right: Sorted right half.
+    
+    Returns:
+        A merged and sorted list containing all elements from left and right.
+    """
+    merged = []
+    left_index = right_index = 0
 
-        l = 0
-        r = 0
-        i = 0
+    # Merge until one list is exhausted
+    while left_index < len(left) and right_index < len(right):
+        if left[left_index] <= right[right_index]:
+            merged.append(left[left_index])
+            left_index += 1
+        else:
+            merged.append(right[right_index])
+            right_index += 1
 
-        while l < len(left) and r < len(right):
-            if left[l] <= right[r]:
-                ASSIGNMENT(new_list=list_to_sort_by_merge, i=i, old_list=left, j=l)
-                l += 1
-            else:
-                ASSIGNMENT(new_list=list_to_sort_by_merge, i=i, old_list=right, j=r)
-                r += 1
-            i += 1
+    # Append remaining elements
+    merged.extend(left[left_index:])
+    merged.extend(right[right_index:])
+    
+    return merged
 
-        while l < len(left):
-            list_to_sort_by_merge[i] = left[l]
-            l += 1
-            i += 1
-
-        while r < len(right):
-            list_to_sort_by_merge[i] = right[r]
-            r += 1
-            i += 1
-
-
-import matplotlib.pyplot as plt
-
-my_list = [54, 26, 93, 17, 77, 31, 44, 55, 20]
-x = range(len(my_list))
-plt.plot(x, my_list)
-plt.show()
-mergeSort(my_list)
-x = range(len(my_list))
-plt.plot(x, my_list)
-plt.show()
+# Example usage (for testing purposes)
+if __name__ == "__main__":
+    sample_list = [38, 27, 43, 3, 9, 82, 10]
+    sorted_list = merge_sort(sample_list)
+    print(f"Sorted list: {sorted_list}")

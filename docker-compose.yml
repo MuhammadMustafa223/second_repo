@@ -1,0 +1,15 @@
+services:
+  test:
+    build: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: pytest test_unique_finder.py --tb=short
+
+  runmethod:
+    build: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: python -c "from unique_finder import find_unique_element; print('Result:', find_unique_element([1, 2, 3, 2, 1]))"
+
